@@ -1,0 +1,480 @@
+-- The script on the gui ARENT mine! so credits to the ppl who made these scripts! --
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+local Window = Library.CreateLib("CW Script Hub|the scripts on the gui arent mine so credits to them", "BloodTheme")
+
+local Tab = Window:NewTab("Main")
+
+local Section = Tab:NewSection("Credits to the ppl who made these scripts!")
+
+Section:NewButton("Auto parry", "Auto parry (must have good ping 70-100)", function()
+local lp = game.Players.LocalPlayer
+
+local animationInfo = {}
+
+function getInfo(id)
+  local success, info = pcall(function()
+      return game:GetService("MarketplaceService"):GetProductInfo(id)
+  end)
+  if success then
+      return info
+  end
+  return {Name=''}
+end
+function block(player)
+  keypress(0x46)
+  wait()
+  keyrelease(0x46)
+end
+
+local AnimNames = {
+  'Slash',
+  'Swing',
+  'Sword'
+}
+
+function playerAdded(v)
+    local function charadded(char)
+      local humanoid = char:WaitForChild("Humanoid", 5)
+      if humanoid then
+          humanoid.AnimationPlayed:Connect(function(track)
+              local info = animationInfo[track.Animation.AnimationId]
+              if not info then
+                  info = getInfo(tonumber(track.Animation.AnimationId:match("%d+")))
+                  animationInfo[track.Animation.AnimationId] = info
+              end
+             
+              if (lp.Character and lp.Character:FindFirstChild("Head") and v.Character:FindFirstChild("Head")) then
+                  local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
+                  if mag < 15  then
+                     
+                      for _, animName in pairs(AnimNames) do
+                          if info.Name:match(animName) then
+                              pcall(block, v)
+                          end
+                      end
+                     
+                  end
+              end
+          end)
+      end
+  end
+ 
+  if v.Character then
+      charadded(v.Character)
+  end
+  v.CharacterAdded:Connect(charadded)
+end
+
+for i,v in pairs(game.Players:GetPlayers()) do
+   if v ~= lp then
+       playerAdded(v)
+   end
+end
+
+game.Players.PlayerAdded:Connect(playerAdded)
+end)
+
+Section:NewButton("infinite stamina", "shes a runner shes a trackstar", function()
+-- CW | Inf. Stamina & No Jump Cooldown --
+-- Made by neexx on V3rm --
+
+for i,v in pairs(getgc(true)) do
+   if typeof(v) == "table" and rawget(v, "getIsMaxed") then
+       v.getIsMaxed = function()
+           return false
+       end
+       v.getFlags = function()
+           return 1
+       end
+       v.addFlags = function(a,b)
+           a:setFlags(0)
+           return
+       end
+   end
+   -- "There was another script here but it caused the user to crash (lag out), so it had to be removed" -KiwisASkid --
+   if typeof(v) == "table" and rawget(v, "spawnCharacter") then
+       local oldfunc = v.spawnCharacter
+       v.SpawnCharacter = function(a)
+           for _,f in pairs(getgc(true)) do
+               if typeof(f) == "table" and rawget(f, "getIsMaxed") then
+                   f.getIsMaxed = function()
+                       return false
+                   end
+                   f.getFlags = function()
+                       return 1
+                   end
+                   f.addFlags = function(aa,b)
+                       aa:setFlags(0)
+                       return
+                   end
+               end
+           end
+       end
+   end
+   if typeof(v) == "table" and rawget(v, "getCanJump") then
+       v.getCanJump = function()
+           return true
+       end
+   end
+   if typeof(v) == "table" and rawget(v, "JUMP_DELAY_ADD") then
+       v.JUMP_DELAY_ADD = 0.5
+   end
+   if typeof(v) == "table" and rawget(v, "_setStamina") then
+       v._setStamina = function(a, b)
+           a._stamina = math.huge
+           a._staminaChangedSignal:Fire(99)
+       end
+   end
+end
+game.StarterGui:SetCore("SendNotification", {Title = "CB", Text = "Script loaded, "..game.Players.LocalPlayer.DisplayName..".", Duration = 4,})
+end)
+
+Section:NewButton("Axonware (must change screen width)", "Axonware removed keysystem", function()
+local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+
+Notification:Notify(
+    {Title = "Notification", Description = "Keysystem removed by ItsLouisPlayz"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 10, Type = "option"},
+    {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = function(State) print(tostring(State)) end}
+)
+wait(1)
+Notification:Notify(
+    {Title = "Notificafion", Description = "Sub to ItsLouisPlayz"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 10, Type = "image"},
+    {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
+)
+wait(1)
+Notification:Notify(
+    {Title = "Notification", Description = "Have fun exploiting!"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 10, Type = "default"}
+)
+
+
+
+getgenv().Axonware = {
+    AntiParry = false;
+    AutoParry = false;
+    HitboxExpander = false;
+    HitboxSizeExpansion = 2.5;
+    AutoSlash = false;
+    AutoGloryKill = false;
+    SlashDistance = 10;
+    AutoEquipMeleeForParry = false;
+    ParryDistance = 10;
+}
+
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('CoreGui')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+
+local RunService = game:GetService('RunService')
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild('PlayerGui')
+
+local LocalMelee
+
+local BlockAnimations = {}
+local SlashAnimations = {}
+
+for _, Garbage in pairs(getgc(true)) do
+    if type(Garbage) == 'table' then
+        if rawget(Garbage, 'type') and rawget(Garbage, 'displayName') then
+            if Garbage.type == 'weapon' then
+                if rawget(Garbage, 'blockMetadata') then
+                    BlockAnimations[Garbage.displayName] = {}
+
+                    for _, Data in pairs(Garbage.blockMetadata) do
+                        BlockAnimations[Garbage.displayName][Data.animation.AnimationId] = true
+                    end
+                end
+
+                if rawget(Garbage, 'slashMetadata') then
+                    SlashAnimations[Garbage.displayName] = {}
+
+                    for _, Data in pairs(Garbage.slashMetadata) do
+                        SlashAnimations[Garbage.displayName][Data.animation.AnimationId] = true
+                    end
+                end
+            end
+        end
+    end
+end
+
+function GetMelee(Player)
+   local PossibleMelee = Player:FindFirstChildOfClass('Tool')
+
+    if PossibleMelee and PossibleMelee:FindFirstChild('Hitboxes') then
+        return PossibleMelee
+    end
+end
+
+function GetShield(Player)
+    for _, Shield in pairs(ReplicatedStorage.Shared.Assets.Cosmetics.ParryShield.Shields:GetChildren()) do
+        local PossibleShield = Player:FindFirstChild(Shield.Name)
+
+        if PossibleShield then
+            return PossibleShield
+        end
+    end
+end
+
+function IsSlash(Player, Melee)
+    local Humanoid = Player:FindFirstChild('Humanoid')
+    
+    if Humanoid then
+        for _, Track in pairs(Humanoid:GetPlayingAnimationTracks()) do
+            if SlashAnimations[Melee][Track.Animation.AnimationId] then
+                return true
+            end
+        end
+    end
+    
+    return false
+end
+
+function IsParry(Player, Melee)
+    local Humanoid = Player:FindFirstChild('Humanoid')
+    
+    if Humanoid then
+        for _, Track in pairs(Humanoid:GetPlayingAnimationTracks()) do
+            if BlockAnimations[Melee][Track.Animation.AnimationId] then
+                return true
+            end
+        end
+    end
+end
+
+function GetClosestPlayer(Distance)
+    local Target
+        
+    for _, Player in pairs(workspace.PlayerCharacters:GetChildren()) do
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild('HumanoidRootPart') then
+            if Player ~= LocalPlayer.Character then
+                if Player:FindFirstChild('HumanoidRootPart') then
+                    local Magnitude = (LocalPlayer.Character.HumanoidRootPart.Position - Player.HumanoidRootPart.Position).Magnitude
+                        
+                    if Magnitude <= Distance then
+                        Target = Player
+                        Distance = Magnitude
+                    end
+                end
+            end
+        end
+    end
+            
+    return Target
+end
+
+function IsParryOnCooldown()
+	local Indicator = PlayerGui.RoactUI:FindFirstChild('BottomStatusIndicators')
+    
+	if Indicator then
+		if Indicator.FrameContainer.SecondRowFrame.ActionCooldownsFrame.ParryActionCooldown.BarClipper.RealBar.Size.Y.Scale <= 1 then
+			return false
+		end
+	end
+    
+    return true
+end
+
+function Watcher(Player)
+    task.spawn(function()
+        local Melee, Shield
+        
+        repeat task.wait()
+            Melee = GetMelee(Player)
+            Shield = GetShield(Player)
+        until Melee and Shield
+        
+        if Player == LocalPlayer.Character then
+            LocalMelee = Melee
+            
+            if Axonware.HitboxExpander then
+                for _, Hitbox in pairs(LocalMelee:WaitForChild('Hitboxes'):GetChildren()) do
+                    for _, Point in pairs(Hitbox:GetChildren()) do
+                        if (Point:IsA('Attachment') and Point.Name == 'DmgPoint') then
+                            Point.Visible = true
+                            Point.Position += Vector3.new(0, math.random(-Axonware.HitboxSizeExpansion, Axonware.HitboxSizeExpansion), 0)
+                        end
+                    end
+                end
+            end
+        else
+            local Connetion
+            
+            Connetion = RunService.Heartbeat:Connect(function()
+                if not Player:IsDescendantOf(workspace.PlayerCharacters) then
+                    Connetion:Disconnect()
+                end
+                
+                if Axonware.AntiParry then
+                    task.spawn(function()
+                        if IsParry(Player, Melee.Name) then
+                            if (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild('HumanoidRootPart')) then
+                                if Player:FindFirstChild('HumanoidRootPart') then
+                                    if (LocalPlayer.Character.HumanoidRootPart.Position - Player.HumanoidRootPart.Position).Magnitude <= Axonware.ParryDistance then
+                                        if (LocalMelee and LocalMelee.Parent == LocalPlayer.Character) then
+                                            LocalPlayer.Character.Humanoid:UnequipTools()
+                                            Shield:GetPropertyChangedSignal('Transparency'):wait()
+                                            LocalPlayer.Character.Humanoid:EquipTool(LocalMelee)
+                                		end
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                end
+                
+                if Axonware.AutoParry then
+                	if Melee.Parent == Player then
+	                    for _, Hitbox in pairs(Melee.Hitboxes:GetChildren()) do
+	                        task.spawn(function()
+	                            if IsSlash(Player, Melee.Name) then
+	                                if (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild('HumanoidRootPart')) then
+	                                    if (LocalPlayer.Character.HumanoidRootPart.Position - Hitbox.Position).Magnitude <= Axonware.ParryDistance then
+	                                        if (LocalMelee and not IsParryOnCooldown()) then
+	                                            if LocalMelee.Parent ~= LocalPlayer.Character then
+	                                                if Axonware.AutoEquipMeleeForParry then
+	                                                    LocalPlayer.Character.Humanoid:EquipTool(LocalMelee)
+	                                                end
+	                                            end
+	                                            
+	                                            keypress(0x46)
+	                                            task.wait()
+	                                            keyrelease(0x46)
+	                                        end
+	                                    end
+	                                end
+	                            end
+	                        end)
+	                    end
+					end	               
+                end
+            end)
+        end
+    end)
+end
+
+local UserInterface = loadstring(game:HttpGet('https://raw.githubusercontent.com/amkenzo/axonware/main/libraries/user_interface.lua', true))()
+
+local Window = UserInterface:CreateWindow({
+    WindowName = 'Axonware';
+    Color = Color3.fromRGB(200, 200, 200);
+}, CoreGui)
+
+local CombatTab = Window:CreateTab('Combat')
+local SettingsTab = Window:CreateTab('Settings')
+
+local MeleeSection = CombatTab:CreateSection('Melee')
+local ParrySection = CombatTab:CreateSection('Parry')
+
+local UISection = SettingsTab:CreateSection('UI')
+
+MeleeSection:CreateToggle('Auto Slash', false, function(Value)
+    Axonware.AutoSlash = Value
+end)
+
+MeleeSection:CreateToggle('Auto Glory kill', false, function(Value)
+    Axonware.AutoGloryKill = Value
+end)
+
+MeleeSection:CreateSlider('Slash Distance', 1, 25, 10, true, function(Value)
+    Axonware.SlashDistance = tonumber(Value)
+end)
+
+MeleeSection:CreateToggle('Hitbox Expander', false, function(Value)
+    Axonware.HitboxExpander = Value
+end)
+
+MeleeSection:CreateSlider('Hitbox Size Expansion', 0, 5, 2.5, false, function(Value)
+    Axonware.HitboxSizeExpansion = tonumber(Value)
+end)
+
+ParrySection:CreateToggle('Anti Parry', false, function(Value)
+    Axonware.AntiParry = Value
+end)
+
+ParrySection:CreateToggle('Auto Parry', false, function(Value)
+    Axonware.AutoParry = Value
+end)
+
+ParrySection:CreateToggle('Auto Equip Melee For Parry', false, function(Value)
+    Axonware.AutoEquipMeleeForParry = Value
+end)
+
+ParrySection:CreateSlider('Parry Distance', 1, 25, 10, true, function(Value)
+    Axonware.ParryDistance = tonumber(Value)
+end)
+
+UIVisible = UISection:CreateToggle('Visible', true, function(Value)
+    Window:Toggle(Value)
+end):CreateKeybind('Semicolon')
+
+UISection:CreateColorpicker('Color', function(Value)
+    Window:ChangeColor(Value)
+end)
+
+for _, Player in pairs(workspace.PlayerCharacters:GetChildren()) do
+    Watcher(Player)
+end
+
+workspace.PlayerCharacters.ChildAdded:Connect(function(Player)
+    Watcher(Player)
+end)
+
+RunService.Heartbeat:Connect(function()
+    task.spawn(function()
+		local ClosestTarget = GetClosestPlayer(Axonware.SlashDistance)
+		        
+		if (ClosestTarget and ClosestTarget:FindFirstChild('Humanoid')) then
+			if (LocalMelee and LocalMelee.Parent == LocalPlayer.Character) then
+				local Melee = GetMelee(ClosestTarget)
+		                
+		        if (Melee and IsParry(ClosestTarget, Melee.Name)) then
+					return
+		        end
+		                
+		       	if tonumber(ClosestTarget.Humanoid.Health) > 20 then
+		            if Axonware.AutoSlash then
+						mouse1click()
+					end
+				else
+					if Axonware.AutoGloryKill then
+		                keypress(0x47)
+		                task.wait()
+						keyrelease(0x47)
+					end
+				end
+			end
+		end
+	end)
+end)
+end)
+
+Section:NewButton("Change your screen width tutorial video", "look at your clipboard", function()
+  setclipboard("https://youtu.be/WRsEg6UiTfU?si=qc0bBjdN-LmRuP0W")
+end)
+
+Section:NewButton("Bow hitbox expander script", "Credits to the TblKBA!?", function()
+_G.HeadSize = 20
+_G.Disabled = true
+game:GetService('RunService').RenderStepped:connect(function()
+if _G.Disabled then
+for i,v in next, game:GetService('Players'):GetPlayers() do
+if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+pcall(function()
+v.Character.Head.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
+v.Character.Head.Transparency = 1
+v.Character.Head.BrickColor = BrickColor.new("Red")
+v.Character.Head.Material = "Neon"
+v.Character.Head.CanCollide = false
+v.Character.Head.Massless = true
+end)
+end
+end
+end
+end)
+end)
